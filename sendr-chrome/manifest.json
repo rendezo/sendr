@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Sendr - Telefonról PC-re küldés",
+  "version": "1.0.1",
+  "description": "Szövegek és linkek küldése telefonról PC-re Cloudflare Workers API-n keresztül. Nem gyűjt adatokat.",
+  "homepage_url": "https://mobio.hu",
+  "permissions": ["storage", "activeTab", "tabs", "clipboardWrite"],
+  "host_permissions": ["https://*.workers.dev/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Sendr",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["browser-polyfill.min.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

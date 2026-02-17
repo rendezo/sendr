@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2563eb">
+  <title>Sendr</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 12px 16px 24px;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      color: #1a1a1a;
+      background: #f5f5f5;
+      min-height: 100vh;
+    }
+    h1 { margin: 0 0 12px 0; font-size: 18px; font-weight: 600; color: #2563eb; }
+    label { display: block; margin-bottom: 4px; font-weight: 500; color: #444; font-size: 13px; }
+    input[type="text"], input[type="password"], textarea {
+      width: 100%;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    textarea { min-height: 72px; resize: vertical; }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+    button {
+      width: 100%;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    button.primary { background: #2563eb; color: white; }
+    button.primary:hover { background: #1d4ed8; }
+    button.secondary { background: #e5e7eb; color: #374151; }
+    button.secondary:hover { background: #d1d5db; }
+    button.small { width: auto; padding: 6px 10px; font-size: 12px; margin-bottom: 0; }
+    .status { margin-top: 8px; padding: 8px 10px; border-radius: 6px; font-size: 13px; display: none; }
+    .status.show { display: block; }
+    .status.ok { background: #d1fae5; color: #065f46; }
+    .status.err { background: #fee2e2; color: #991b1b; }
+    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .header-row h1 { margin: 0; }
+    .settings-link { font-size: 13px; color: #2563eb; cursor: pointer; padding: 4px 8px; text-decoration: none; }
+    .settings-link:hover { text-decoration: underline; }
+    .section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb; }
+    .section:last-of-type { border-bottom: none; }
+    #settingsView { display: none; }
+    #settingsView.show { display: block; }
+    #mainView { display: block; }
+    #mainView.hide { display: none; }
+    .fetched-box {
+      margin-top: 8px;
+      padding: 10px 12px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 13px;
+      word-break: break-word;
+      white-space: pre-wrap;
+      display: none;
+    }
+    .fetched-box.show { display: block; }
+    .fetched-box .copy-btn { margin-top: 8px; }
+    .history-section { margin-top: 16px; }
+    .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; cursor: pointer; user-select: none; }
+    .history-chevron { display: inline-block; margin-right: 6px; font-size: 12px; transition: transform 0.2s; }
+    .history-section.collapsed .history-chevron { transform: rotate(-90deg); }
+    .history-section.collapsed .history-content { display: none; }
+    .history-item { padding: 8px 10px; margin-bottom: 6px; background: #fff; border-radius: 6px; border: 1px solid #e5e7eb; cursor: pointer; }
+    .history-item:hover { background: #f9fafb; }
+    .history-item-text { font-size: 13px; color: #374151; word-break: break-word; }
+    .history-item-time { font-size: 11px; color: #9ca3af; margin-top: 4px; }
+    .history-unlock { padding: 8px 0; }
+    .history-unlock input { margin-bottom: 8px; }
+    .history-unlock p { margin: 0 0 8px 0; font-size: 13px; color: #666; }
+  </style>
+</head>
+<body>
+  <div id="mainView">
+    <div class="header-row">
+      <h1>Sendr</h1>
+      <a href="#" class="settings-link" id="openSettings">Beállítások</a>
+    </div>
+
+    <div class="section">
+      <label for="sendText">Küldés</label>
+      <textarea id="sendText" placeholder="Szöveg vagy link…" maxlength="500"></textarea>
+      <button type="button" class="primary" id="send">Küldés</button>
+    </div>
+
+    <div class="section">
+      <label>Lekérés</label>
+      <button type="button" class="primary" id="fetch">Lekérés</button>
+      <div id="fetchedBox" class="fetched-box">
+        <div id="fetchedText"></div>
+        <button type="button" class="small secondary copy-btn" id="copyFetched">Másolás vágólapra</button>
+      </div>
+    </div>
+
+    <div id="status" class="status"></div>
+
+    <div class="history-section" id="historySection">
+      <div class="history-header" id="historyToggle">
+        <span class="history-chevron">▼</span>
+        <span>Történet</span>
+        <button type="button" class="small secondary" id="clearHistory">Törlés</button>
+      </div>
+      <div class="history-content">
+        <div class="history-unlock" id="historyUnlock">
+          <p>A történet megtekintéséhez add meg a titkos kulcsot.</p>
+          <input type="password" id="historySecretInput" placeholder="Titkos kulcs" autocomplete="off">
+          <button type="button" class="small secondary" id="historyUnlockBtn">Megjelenítés</button>
+        </div>
+        <div id="history" style="display: none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="settingsView">
+    <div class="header-row">
+      <h1>Beállítások</h1>
+      <a href="#" class="settings-link" id="closeSettings">← Vissza</a>
+    </div>
+    <label for="apiKey">API kulcs</label>
+    <input type="password" id="apiKey" placeholder="API kulcs" autocomplete="off">
+    <label for="secret">Titkos kulcs (Secret phrase)</label>
+    <input type="password" id="secret" placeholder="Titkos kulcs" autocomplete="off">
+    <label for="baseUrl">Backend URL (opcionális)</label>
+    <input type="text" id="baseUrl" placeholder="https://xxx.workers.dev">
+    <button type="button" class="secondary" id="save">Mentés</button>
+    <p style="font-size: 12px; color: #666; margin-top: 8px;">Az API kulcsot és a titkos kulcsot a gyökér README szerint állítsd be (Cloudflare Worker).</p>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function() {});
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

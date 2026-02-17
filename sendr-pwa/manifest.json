@@ -1,0 +1,17 @@
+{
+  "name": "Sendr - Telefonról PC-re",
+  "short_name": "Sendr",
+  "description": "Szöveg és link küldése telefonról PC-re. Titkosított, ugyanaz a backend mint a bővítmény.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f5f5",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sendr</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      width: 280px;
+      max-height: 480px;
+      overflow-y: auto;
+      margin: 0;
+      padding: 8px 10px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 12px;
+      color: #1a1a1a;
+      background: #f5f5f5;
+    }
+    textarea {
+      width: 100%;
+      padding: 5px 8px;
+      margin-bottom: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 48px;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+    h1 {
+      margin: 0 0 6px 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #2563eb;
+    }
+    label {
+      display: block;
+      margin-bottom: 2px;
+      font-weight: 500;
+      color: #444;
+      font-size: 11px;
+    }
+    input {
+      width: 100%;
+      padding: 5px 8px;
+      margin-bottom: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    }
+    .destination-group {
+      margin-bottom: 6px;
+    }
+    .destination-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: background 0.2s;
+      font-size: 11px;
+    }
+    .destination-group label:hover {
+      background: #f0f0f0;
+    }
+    .destination-group input[type="radio"] {
+      width: auto;
+      margin: 0;
+    }
+    button {
+      width: 100%;
+      padding: 5px 8px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 4px;
+    }
+    button.primary {
+      background: #2563eb;
+      color: white;
+    }
+    button.primary:hover { background: #1d4ed8; }
+    button.secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    button.secondary:hover { background: #d1d5db; }
+    button.small {
+      padding: 3px 6px;
+      font-size: 11px;
+      width: auto;
+      display: inline-block;
+      margin-bottom: 0;
+    }
+    .status {
+      margin-top: 4px;
+      padding: 4px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+      display: none;
+    }
+    .status.show { display: block; }
+    .status.ok { background: #d1fae5; color: #065f46; }
+    .status.err { background: #fee2e2; color: #991b1b; }
+    .history-section {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #ddd;
+    }
+    .history-item {
+      padding: 5px 6px;
+      margin-bottom: 3px;
+      background: white;
+      border-radius: 3px;
+      border: 1px solid #e5e7eb;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .history-item:hover {
+      background: #f9fafb;
+    }
+    .history-item-text {
+      font-size: 11px;
+      color: #374151;
+      word-break: break-word;
+      line-height: 1.3;
+    }
+    .history-item-time {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .history-title {
+      font-weight: 600;
+      font-size: 12px;
+      color: #374151;
+    }
+    .history-section .history-header {
+      cursor: pointer;
+      user-select: none;
+    }
+    .history-section .history-header .history-chevron {
+      display: inline-block;
+      margin-right: 4px;
+      font-size: 10px;
+      transition: transform 0.2s;
+    }
+    .history-section.collapsed .history-chevron { transform: rotate(-90deg); }
+    .history-section.collapsed .history-content { display: none; }
+    .history-unlock {
+      padding: 6px 0;
+      font-size: 11px;
+      color: #666;
+    }
+    .history-unlock input { margin-bottom: 4px; font-size: 11px; padding: 4px 6px; }
+    .history-unlock p { margin: 0 0 4px 0; }
+    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .header-row h1 { margin: 0; }
+    .settings-link { font-size: 11px; color: #2563eb; cursor: pointer; padding: 2px 4px; }
+    .settings-link:hover { text-decoration: underline; }
+    #settingsView { display: none; }
+    #settingsView.show { display: block; }
+    #mainView { display: block; }
+    #mainView.hide { display: none; }
+  </style>
+</head>
+<body>
+  <div id="mainView">
+    <div class="header-row">
+      <h1>📱 Sendr</h1>
+      <span class="settings-link" id="openSettings">⚙️ Beállítások</span>
+    </div>
+    <div style="margin-top: 0;">
+      <label for="sendText">📤 Küldés</label>
+      <textarea id="sendText" rows="2" placeholder="Szöveg vagy link..." maxlength="500"></textarea>
+      <button type="button" class="primary" id="send">📤 Küldés</button>
+    </div>
+    
+    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #ddd;">
+      <div class="destination-group">
+        <label>
+          <input type="radio" name="destination" value="clipboard" checked>
+          <span>📋 Vágólapra másolás</span>
+        </label>
+        <label>
+          <input type="radio" name="destination" value="field">
+          <span>✏️ Aktuális mezőbe beillesztés</span>
+        </label>
+      </div>
+      
+      <button type="button" class="primary" id="fetch">📥 Lekérés</button>
+    </div>
+    
+    <div id="status" class="status"></div>
+    
+    <div class="history-section" id="historySection">
+      <div class="history-header" id="historyToggle">
+        <span class="history-chevron">▼</span>
+        <span class="history-title">Történet</span>
+        <button type="button" class="small secondary" id="clearHistory">Törlés</button>
+      </div>
+      <div class="history-content">
+        <div class="history-unlock" id="historyUnlock">
+          <p style="margin: 0 0 8px 0;">A történet megtekintéséhez add meg a titkos kulcsot.</p>
+          <input type="password" id="historySecretInput" placeholder="Titkos kulcs" autocomplete="off" style="margin-bottom: 8px;">
+          <button type="button" class="small secondary" id="historyUnlockBtn">Megjelenítés</button>
+        </div>
+        <div id="history" style="display: none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="settingsView">
+    <div class="header-row">
+      <h1>⚙️ Beállítások</h1>
+      <span class="settings-link" id="closeSettings">← Vissza</span>
+    </div>
+    <label for="apiKey">API kulcs</label>
+    <input type="password" id="apiKey" placeholder="API kulcs" autocomplete="off">
+    <label for="secret">Titkos kulcs (Secret phrase)</label>
+    <input type="password" id="secret" placeholder="Titkos kulcs (Secret phrase)" autocomplete="off">
+    <button type="button" class="secondary" id="save">Mentés</button>
+    <p style="font-size: 10px; color: #666; margin-top: 6px;">Az API kulcs és a titkos kulcs a Sendr szinkronhoz kell.</p>
+  </div>
+  
+  <script src="browser-polyfill.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

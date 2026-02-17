@@ -21,6 +21,8 @@ A Sendr két részből áll:
 
 - **Firefox bővítmények (AMO):** [addons.mozilla.org](https://addons.mozilla.org) → keresés: „Sendr” → Telepítés.
 - Vagy **ideiglenes telepítés:** Firefox → `about:debugging` → „Ez a Firefox” → „Kiegészítő betöltése…” → válaszd ki a `sendr/manifest.json` fájlt.
+- **Chrome:** A **sendr-chrome** mappa a Chrome bővítményt (Manifest V3) tartalmazza; ugyanazt a backendet használja. Chrome-ban: `chrome://extensions` → Fejlesztői mód be → „Kiegészítő betöltése” → válaszd a repó `sendr-chrome` mappáját.
+- **Mobil (Chrome Android / iOS):** A **sendr-pwa** mappa egy PWA (webalkalmazás). Ha fel van töltve valahova (pl. GitHub Pages), a telefonon nyisd meg az oldalt, majd „Alkalmazás telepítése” / „Hozzáadás a kezdőképernyőhöz”. Részletek: [sendr-pwa/README.md](sendr-pwa/README.md).
 
 ---
 
@@ -110,6 +112,8 @@ A parancs kiírja a Worker URL-jét (pl. `https://sendr-api.xyz.workers.dev`).
 | Fájl / mappa | Mit csinál |
 |--------------|------------|
 | **sendr/** | Firefox bővítmény (manifest, popup, háttér, tartalom script) |
+| **sendr-chrome/** | Chrome bővítmény (Manifest V3); ugyanaz a funkció, ugyanaz a backend |
+| **sendr-pwa/** | PWA (webalkalmazás): Chrome Android, iOS, bármely böngésző; ugyanaz a backend |
 | **workers.js** | Cloudflare Worker kód – ezt kell deployolni a Cloudflare-ra |
 | **sendr-bemutato.html** | Bemutató és telepítési útmutató (pl. mobio.hu-ra feltölthető) |
 

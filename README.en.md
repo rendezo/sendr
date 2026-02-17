@@ -21,6 +21,8 @@ Sendr has two parts:
 
 - **Firefox Add-ons (AMO):** [addons.mozilla.org](https://addons.mozilla.org) → search for “Sendr” → Install.
 - Or **temporary install:** Firefox → `about:debugging` → “This Firefox” → “Load Temporary Add-on…” → choose the `sendr/manifest.json` file.
+- **Chrome:** The **sendr-chrome** folder contains the Chrome extension (Manifest V3); it uses the same backend. In Chrome: `chrome://extensions` → turn on Developer mode → “Load unpacked” → select the repo’s `sendr-chrome` folder.
+- **Mobile (Chrome Android / iOS):** The **sendr-pwa** folder is a PWA (web app). Host it (e.g. GitHub Pages), open the URL on your phone, then use “Install app” / “Add to Home Screen”. See [sendr-pwa/README.md](sendr-pwa/README.md).
 
 ---
 
@@ -110,6 +112,8 @@ The command will print your Worker URL (e.g. `https://sendr-api.xyz.workers.dev`
 | File / folder   | Purpose |
 |-----------------|--------|
 | **sendr/**      | Firefox extension (manifest, popup, background, content script) |
+| **sendr-chrome/** | Chrome extension (Manifest V3); same features, same backend |
+| **sendr-pwa/** | PWA (web app) for Chrome Android, iOS, any browser; same backend |
 | **workers.js**  | Cloudflare Worker code – deploy this to Cloudflare |
 | **sendr-bemutato.html** | Demo and setup guide (e.g. for mobio.hu) |
 
