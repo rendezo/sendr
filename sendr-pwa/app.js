@@ -11,7 +11,9 @@ const MAX_SEND_LENGTH = 500;
 function getBaseUrl() {
   try {
     const u = localStorage.getItem(BASE_URL_KEY);
-    return (u && u.trim()) ? u.trim() : DEFAULT_BASE_URL;
+    const url = (u && u.trim()) ? u.trim() : DEFAULT_BASE_URL;
+    if (!url.startsWith('https://')) return DEFAULT_BASE_URL;
+    return url.replace(/\/+$/, ''); // levágjuk a végén lévő perjeleket
   } catch (_) {
     return DEFAULT_BASE_URL;
   }
@@ -281,7 +283,8 @@ sendBtn.addEventListener('click', async () => {
       body: JSON.stringify({ payload: encrypted })
     });
     if (!res.ok) {
-      showStatus('HTTP hiba: ' + res.status + ' - ' + (await res.text()), true);
+      let msg = 'HTTP hiba: ' + res.status + (res.status === 404 ? '. Ellenőrizd a Beállításokban a Backend URL-t (perjel nélkül).' : ' - ' + (await res.text()));
+      showStatus(msg, true);
       return;
     }
     const result = await res.json();
@@ -321,7 +324,11 @@ fetchBtn.addEventListener('click', async () => {
       headers: { 'x-api-key': apiKey, 'Accept': 'application/json' }
     });
     if (!res.ok) {
-      showStatus('HTTP hiba: ' + res.status, true);
+      let msg = 'HTTP hiba: ' + res.status;
+      if (res.status === 404) {
+        msg += '. Ellenőrizd a Beállításokban a Backend URL-t (pl. https://xxx.workers.dev, perjel nélkül).';
+      }
+      showStatus(msg, true);
       return;
     }
     const messages = await res.json();
