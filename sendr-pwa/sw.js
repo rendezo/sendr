@@ -1,5 +1,5 @@
 // Sendr PWA - minimal service worker for installability
-const CACHE = 'sendr-pwa-v1';
+const CACHE = 'sendr-pwa-v2';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
