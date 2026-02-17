@@ -334,7 +334,16 @@ fetchBtn.addEventListener('click', async () => {
     fetchedTextEl.textContent = decryptedText;
     fetchedBox.classList.add('show');
     pendingFetched = { text: decryptedText, messageId: latest.message_id };
-    showStatus('Lekérve. Másold vágólapra ha kell.');
+
+    try {
+      await navigator.clipboard.writeText(decryptedText);
+      await sendAck(latest.message_id, apiKey);
+      saveToHistory(decryptedText, latest.message_id);
+      loadHistory();
+      showStatus('Vágólapra másolva, ACK elküldve.');
+    } catch (_) {
+      showStatus('Lekérve. Másold vágólapra a gombbal, ha kell.');
+    }
   } catch (err) {
     showStatus(err.message || 'Hálózati hiba', true);
   }

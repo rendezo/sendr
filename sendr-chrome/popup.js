@@ -409,6 +409,28 @@ fetchBtn.addEventListener('click', async () => {
     // A backend payload objektumot ad vissza: { iv, ciphertext }
     const decryptedText = await decryptText(secret, latest.payload || latest);
 
+    if (destination === 'clipboard') {
+      try {
+        await navigator.clipboard.writeText(decryptedText);
+      } catch (e) {
+        showStatus('Nem sikerült a vágólapra másolás.', true);
+        return;
+      }
+      const resp = await browser.runtime.sendMessage({
+        type: 'ACK_AND_SAVE_ONLY',
+        message_id: latest.message_id,
+        text: decryptedText,
+        apiKey,
+      });
+      if (resp?.error) {
+        showStatus(resp.error, true);
+        return;
+      }
+      showStatus('Vágólapra másolva, ACK elküldve.');
+      loadHistory();
+      return;
+    }
+
     await handleSendText(
       decryptedText,
       latest.message_id,

@@ -114,6 +114,26 @@ browser.runtime.onMessage.addListener((message) => {
   })();
 });
 
+// Lekérés + csak vágólap (a popup már másolt): csak ACK és történet
+browser.runtime.onMessage.addListener((message) => {
+  if (message?.type === 'ACK_AND_SAVE_ONLY') {
+    const { message_id: messageId, text, apiKey } = message;
+    if (!messageId || !text || !apiKey) {
+      return Promise.resolve({ error: 'Hiányzó adat.' });
+    }
+    return (async () => {
+      try {
+        await sendAck(messageId, apiKey);
+        await saveToHistory(text, messageId);
+        return { status: 'OK' };
+      } catch (err) {
+        console.warn('[Sendr] ACK_AND_SAVE_ONLY hiba:', err);
+        return { error: err.message || 'ACK sikertelen' };
+      }
+    })();
+  }
+});
+
 // History lekérdezés és mentés – top-level listener
 browser.runtime.onMessage.addListener((message) => {
   if (message?.type === 'GET_HISTORY') {
