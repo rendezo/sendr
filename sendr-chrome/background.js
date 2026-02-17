@@ -29,27 +29,22 @@ async function sendAck(messageId, apiKey) {
   }
 }
 
-function sendToContentScript(text, destination) {
-  return new Promise((resolve) => {
-    browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (!tabs.length) {
-        resolve({ status: '', noTab: true });
-        return;
-      }
-      browser.tabs.sendMessage(tabs[0].id, { 
-        type: 'INSERT_TEXT', 
-        text: text,
-        destination: destination 
-      }, (response) => {
-        if (browser.runtime.lastError) {
-          console.warn('[Sendr] Content script error:', browser.runtime.lastError.message);
-          resolve({ status: '', noTab: false });
-          return;
-        }
-        resolve(response ?? { status: '' });
-      });
+async function sendToContentScript(text, destination) {
+  const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+  if (!tabs.length) {
+    return { status: '', noTab: true };
+  }
+  try {
+    const response = await browser.tabs.sendMessage(tabs[0].id, {
+      type: 'INSERT_TEXT',
+      text: text,
+      destination: destination
     });
-  });
+    return response ?? { status: '' };
+  } catch (err) {
+    console.warn('[Sendr] Content script error:', browser.runtime.lastError?.message || err.message);
+    return { status: '', noTab: false };
+  }
 }
 
 async function saveToHistory(text, messageId) {
