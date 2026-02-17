@@ -202,9 +202,9 @@ closeSettingsBtn.addEventListener('click', (e) => { e.preventDefault(); showMain
 
 apiKeyEl.value = getStored(STORAGE_KEY);
 secretEl.value = getStored(SECRET_KEY);
-baseUrlEl.placeholder = DEFAULT_BASE_URL;
 const savedUrl = getStored(BASE_URL_KEY);
-if (savedUrl) baseUrlEl.value = savedUrl;
+baseUrlEl.value = savedUrl || DEFAULT_BASE_URL;
+baseUrlEl.placeholder = 'Üresen hagyva: alapértelmezett';
 
 historyToggle.addEventListener('click', (e) => {
   if (e.target.id === 'clearHistory' || e.target.closest('#clearHistory')) return;

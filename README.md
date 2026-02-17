@@ -17,12 +17,16 @@ A Sendr két részből áll:
 
 ---
 
-## 1. Bővítmény telepítése
+## 1. Bővítmény / alkalmazás telepítése
 
-- **Firefox bővítmények (AMO):** [addons.mozilla.org](https://addons.mozilla.org) → keresés: „Sendr” → Telepítés.
-- Vagy **ideiglenes telepítés:** Firefox → `about:debugging` → „Ez a Firefox” → „Kiegészítő betöltése…” → válaszd ki a `sendr/manifest.json` fájlt.
-- **Chrome:** A **sendr-chrome** mappa a Chrome bővítményt (Manifest V3) tartalmazza; ugyanazt a backendet használja. Chrome-ban: `chrome://extensions` → Fejlesztői mód be → „Kiegészítő betöltése” → válaszd a repó `sendr-chrome` mappáját.
-- **Mobil (Chrome Android / iOS):** A **sendr-pwa** mappa egy PWA (webalkalmazás). Ha fel van töltve valahova (pl. GitHub Pages), a telefonon nyisd meg az oldalt, majd „Alkalmazás telepítése” / „Hozzáadás a kezdőképernyőhöz”. Részletek: [sendr-pwa/README.md](sendr-pwa/README.md).
+| Platform | Verzió | Telepítés |
+|----------|--------|------------|
+| **Firefox** (PC, Android) | Bővítmény | [addons.mozilla.org](https://addons.mozilla.org) → „Sendr” → Telepítés. Vagy ideiglenes: Firefox → `about:debugging` → „Kiegészítő betöltése…” → `sendr/manifest.json`. |
+| **Chrome PC** | Bővítmény (Manifest V3) | A **sendr-chrome** mappa. Chrome: `chrome://extensions` → Fejlesztői mód → „Kiegészítő betöltése” → válaszd a repó `sendr-chrome` mappáját. Ugyanaz a backend. |
+| **Chrome Android** | PWA | A **sendr-pwa** webalkalmazás. Nyisd meg a PWA URL-jét (pl. GitHub Pages) a telefon Chrome-jában → Menü → „Alkalmazás telepítése” / „Hozzáadás a kezdőképernyőhöz”. Beállításokban add meg az API kulcsot és a titkos kulcsot. |
+| **Chrome iOS / Safari iOS** | PWA | Ugyanaz a **sendr-pwa**. Safari-ban nyisd meg a PWA oldalt → Megosztás → „Hozzáadás a kezdőképernyőhöz”. Beállítások: API kulcs, titkos kulcs. |
+
+A PWA (sendr-pwa) bármely böngészőből használható, ha feltöltöd (pl. GitHub Pages). Részletesebb lépések: [sendr-pwa/README.md](sendr-pwa/README.md).
 
 ---
 
