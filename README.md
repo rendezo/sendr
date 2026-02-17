@@ -1,5 +1,7 @@
 # Sendr – Telefonról PC-re küldés
 
+**[English: README.en.md](README.en.md)**
+
 Firefox-kiegészítő: szöveget és linkeket tudsz küldeni a telefonodról a számítógépedre (vagy fordítva). A tartalom titkosítva megy át; a bővítmény nem gyűjt adatot.
 
 ---
