@@ -21,7 +21,7 @@ Sendr has two parts:
 
 | Platform | Version | Install |
 |----------|---------|---------|
-| **Firefox** (PC, Android) | Extension | [addons.mozilla.org](https://addons.mozilla.org) → search “Sendr” → Install. Or temporary: Firefox → `about:debugging` → “Load Temporary Add-on…” → `sendr/manifest.json`. |
+| **Firefox** (PC, Android) | Extension | **Available on Mozilla Add-ons:** [Sendr – Firefox Add-ons](https://addons.mozilla.org/firefox/addon/sendr/). Or temporary: Firefox → `about:debugging` → “Load Temporary Add-on…” → `sendr/manifest.json`. |
 | **Chrome PC** | Extension (Manifest V3) | **sendr-chrome** folder. Chrome: `chrome://extensions` → Developer mode → “Load unpacked” → select the repo’s `sendr-chrome` folder. Same backend. |
 | **Chrome Android** | PWA | **sendr-pwa** web app. Open the PWA URL (e.g. GitHub Pages) in Chrome on your phone → Menu → “Install app” / “Add to Home Screen”. In Settings, enter API key and secret phrase. |
 | **Chrome iOS / Safari iOS** | PWA | Same **sendr-pwa**. In Safari, open the PWA page → Share → “Add to Home Screen”. Settings: API key, secret phrase. |

@@ -21,7 +21,7 @@ A Sendr két részből áll:
 
 | Platform | Verzió | Telepítés |
 |----------|--------|------------|
-| **Firefox** (PC, Android) | Bővítmény | [addons.mozilla.org](https://addons.mozilla.org) → „Sendr” → Telepítés. Vagy ideiglenes: Firefox → `about:debugging` → „Kiegészítő betöltése…” → `sendr/manifest.json`. |
+| **Firefox** (PC, Android) | Bővítmény | **Elérhető a Mozilla addon store-ban:** [Sendr – Firefox kiegészítők](https://addons.mozilla.org/hu/firefox/addon/sendr/). Vagy ideiglenes: Firefox → `about:debugging` → „Kiegészítő betöltése…” → `sendr/manifest.json`. |
 | **Chrome PC** | Bővítmény (Manifest V3) | A **sendr-chrome** mappa. Chrome: `chrome://extensions` → Fejlesztői mód → „Kiegészítő betöltése” → válaszd a repó `sendr-chrome` mappáját. Ugyanaz a backend. |
 | **Chrome Android** | PWA | A **sendr-pwa** webalkalmazás. Nyisd meg a PWA URL-jét (pl. GitHub Pages) a telefon Chrome-jában → Menü → „Alkalmazás telepítése” / „Hozzáadás a kezdőképernyőhöz”. Beállításokban add meg az API kulcsot és a titkos kulcsot. |
 | **Chrome iOS / Safari iOS** | PWA | Ugyanaz a **sendr-pwa**. Safari-ban nyisd meg a PWA oldalt → Megosztás → „Hozzáadás a kezdőképernyőhöz”. Beállítások: API kulcs, titkos kulcs. |
