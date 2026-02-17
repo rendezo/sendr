@@ -1,0 +1,7 @@
+# Ne kerüljön a csomagba
+README.md
+.git
+.gitignore
+*.md
+.env
+*.map

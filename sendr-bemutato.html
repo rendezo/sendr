@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sendr – Telefonról PC-re | mobio.hu</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      color: #1a1a1a;
+      background: #fafafa;
+    }
+    h1 { font-size: 1.75rem; color: #2563eb; margin-top: 0; }
+    h2 { font-size: 1.25rem; margin-top: 28px; color: #374151; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; }
+    h3 { font-size: 1.05rem; margin-top: 18px; color: #4b5563; }
+    p { margin: 0.75em 0; color: #444; }
+    ul, ol { margin: 0.5em 0; padding-left: 1.5em; }
+    li { margin: 0.35em 0; }
+    code, pre {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      overflow-x: auto;
+    }
+    pre { padding: 12px 14px; margin: 12px 0; white-space: pre-wrap; }
+    pre code { padding: 0; background: none; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .note { background: #eff6ff; border-left: 4px solid #2563eb; padding: 10px 14px; margin: 14px 0; font-size: 0.95em; }
+    .step { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 18px; margin: 12px 0; }
+    .step strong { color: #1f2937; }
+  </style>
+</head>
+<body>
+  <h1>📱 Sendr – Telefonról PC-re küldés</h1>
+  <p>Sendr egy Firefox-kiegészítő: szöveget és linkeket tudsz küldeni a telefonodról a számítógépedre (vagy fordítva), saját, titkosított háttérszolgáltatás használatával. A bővítmény nem gyűjt adatot; minden a te backendeden fut.</p>
+
+  <h2>Működés röviden</h2>
+  <ul>
+    <li>Telefonon: megnyitod a Sendr bővítményt, beírod a szöveget, Küldés.</li>
+    <li>PC-n: megnyitod a Sendrt, Lekérés → a tartalom vágólapra vagy a fókuszban lévő mezőbe kerül.</li>
+    <li>A tartalom titkosítva megy át; az API kulcs és a titkos kulcs csak nálad van.</li>
+  </ul>
+
+  <h2>Backend felállítása (Cloudflare Worker)</h2>
+  <p>A Sendrnek kell egy kis API (backend). Ezt egy <strong>Cloudflare Worker</strong> + két <strong>KV tároló</strong> biztosítja. Az alábbi lépéseket egyszer kell megcsinálni.</p>
+
+  <h3>1. Cloudflare fiók és Wrangler</h3>
+  <div class="step">
+    <p>Ha még nincs: regisztrálj a <a href="https://dash.cloudflare.com/sign-up" target="_blank" rel="noopener">Cloudflare</a>-n. Telepítsd a Wrangler CLI-t (Node.js kell hozzá):</p>
+    <pre><code>npm install -g wrangler
+wrangler login</code></pre>
+  </div>
+
+  <h3>2. KV tárolók létrehozása</h3>
+  <div class="step">
+    <p>Két KV namespace kell: egy az API kulcsokhoz, egy az üzenetekhez.</p>
+    <pre><code>wrangler kv:namespace create "TRANSFER_STORES"
+wrangler kv:namespace create "TEXT_BUFFER"
+wrangler kv:namespace create "TEXT_BUFFER" --preview</code></pre>
+    <p>A parancsok kiírják az <code>id</code>-t. Ezeket a következő lépésben használod.</p>
+  </div>
+
+  <h3>3. wrangler.toml és Worker kód</h3>
+  <div class="step">
+    <p>Hozz létre egy mappát a Worker projekthez. Benne egy <code>wrangler.toml</code> példa (cseréld ki a <code>id</code> értékeket a saját KV id-dre):</p>
+    <pre><code>name = "sendr-api"
+main = "workers.js"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "TRANSFER_STORES"
+id = "IDE_ide_TRANSFER_STORES"
+
+[[kv_namespaces]]
+binding = "TEXT_BUFFER"
+id = "IDE_ide_TEXT_BUFFER"
+
+[[kv_namespaces]]
+binding = "TEXT_BUFFER"
+preview_id = "IDE_ide_TEXT_BUFFER_PREVIEW"</code></pre>
+    <p>A <code>workers.js</code> fájl a Sendr projektben található (ugyanaz a mappa, ahol ez az oldal forrása is lehet). Másold be a <code>workers.js</code> tartalmát ebbe a mappába.</p>
+  </div>
+
+  <h3>4. API kulcs regisztrálása a KV-ban</h3>
+  <div class="step">
+    <p>Válassz egy titkos jelszót – ez lesz az API kulcsod. Regisztráld a <code>TRANSFER_STORES</code> KV-ban (a <code>YOUR_API_KEY</code> helyére ezt a jelszót írd, a <code>user1</code> bármi lehet, pl. <code>default</code>):</p>
+    <pre><code>wrangler kv key put --binding=TRANSFER_STORES "api:YOUR_API_KEY" "user1"</code></pre>
+    <p class="note"><strong>Fontos:</strong> A Sendr bővítmény Beállításokban az „API kulcs” mezőbe a <code>YOUR_API_KEY</code> értékét (tehát ezt a jelszót) kell beírni – az <code>api:</code> prefix nem kell.</p>
+  </div>
+
+  <h3>5. Worker deploy</h3>
+  <div class="step">
+    <pre><code>wrangler deploy</code></pre>
+    <p>A deploy után megkapod a Worker URL-jét (pl. <code>https://sendr-api.xyz.workers.dev</code>). A jelenlegi Sendr bővítmény egy előre beállított URL-t használ; ha a saját Workerödöt akarod használni, a bővítményt saját példányban kell módosítani (BASE_URL), vagy a bővítmény készítője később támogatja a saját URL megadását.</p>
+  </div>
+
+  <h2>Sendr bővítmény</h2>
+  <p>A bővítményt a <strong>Firefox bővítmények</strong> oldaláról (addons.mozilla.org) telepítheted, vagy ideiglenesen a <code>manifest.json</code> betöltésével (about:debugging). Beállításokban add meg az API kulcsot és a titkos kulcsot (ezt te találod ki, ugyanaz kell legyen mindkét eszközön).</p>
+
+  <h2>Adatvédelem</h2>
+  <p>A Sendr nem gyűjt és nem küld adatot a fejlesztőnek. Az API kulcs és a titkos kulcs csak a te eszközödön tárolódik. A küldött szöveg titkosítva megy a te backendedre (Cloudflare Worker); a fejlesztő nem fér hozzá.</p>
+
+  <p style="margin-top: 32px; font-size: 0.9em; color: #6b7280;">mobio.hu · Sendr bemutató és telepítési útmutató</p>
+</body>
+</html>

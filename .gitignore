@@ -1,0 +1,13 @@
+# build
+sendr/web-ext-artifacts/
+*.xpi
+*.zip
+
+# env / local
+.env
+.env.*
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
