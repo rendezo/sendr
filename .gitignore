@@ -11,3 +11,12 @@ node_modules/
 # OS
 .DS_Store
 Thumbs.db
+
+# wrangler (helyi Worker-futtatás állapota és titkai)
+.wrangler/
+.dev.vars
+.dev.vars.*
+
+# kulcsok
+*.pem
+*.key
